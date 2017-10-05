@@ -1,5 +1,7 @@
 /* Little program showcasing some cellular automaton/s. By Glaeqen. */ 
 #include <SDL2/SDL.h>
+#include "EventState.h"
+#include "LogicState.h"
 #include <stdio.h>
 
 int main(){
@@ -7,7 +9,7 @@ int main(){
   SDL_Renderer *renderer = NULL;
 
   SDL_Init(SDL_INIT_VIDEO);
-  window = SDL_CreateWindow("CA", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 10, 10, SDL_WINDOW_OPENGL);
+  window = SDL_CreateWindow("CA", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 200, 200, SDL_WINDOW_OPENGL);
 
   if(!window){
     fprintf(stderr, "Could not create a window.\n");
@@ -17,18 +19,13 @@ int main(){
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
   SDL_Event event;
-  SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+  EventState eventState;
+  LogicState logicState;
 
-  while(1){
-    /* if(SDL_PollEvent(&event)){ */
-    /*   if(event.type == SDL_QUIT) break; */
-    /* } */
-    if(SDL_PollEvent(&event)){
-      if(event.type == SDL_QUIT) break;
-      printf("0x%X\n", event.type);
-    }
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+  while(eventState.isRunning){
+    handleEvents(&eventState);
+    updateLogic(&logicState, &eventState);
+    drawLogic(&logicState, renderer);
   }
 
   SDL_Quit();
