@@ -1,8 +1,9 @@
 #pragma once
 
 typedef struct EventState{
-  int isRunning = 1;
+  int isRunning;
 
 } EventState;
 
+EventState initEventState();
 void handleEvents(EventState *eventState);

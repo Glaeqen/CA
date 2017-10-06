@@ -19,8 +19,8 @@ int main(){
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
   SDL_Event event;
-  EventState eventState;
-  LogicState logicState;
+  EventState eventState = initEventState();
+  LogicState logicState = initLogicState();
 
   while(eventState.isRunning){
     handleEvents(&eventState);

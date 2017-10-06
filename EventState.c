@@ -1,6 +1,12 @@
 #include "EventState.h"
 #include <SDL2/SDL.h>
 
+EventState initEventState(){
+  EventState object;
+  object.isRunning = 1;
+  return object;
+}
+
 void handleEvents(EventState *eventState){
   SDL_Event event;
   while(SDL_PollEvent(&event)){
@@ -8,7 +14,10 @@ void handleEvents(EventState *eventState){
     case SDL_QUIT:
       eventState->isRunning = 0;
       break;
-    case 
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+
+      break;
     }
   }
 }
