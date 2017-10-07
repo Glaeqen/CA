@@ -1,8 +1,8 @@
 #pragma once
 
-typedef struct EventState{
-  int isRunning;
-
+typedef struct {
+  char isRunning;
+  char keyPressed;
 } EventState;
 
 EventState initEventState();
