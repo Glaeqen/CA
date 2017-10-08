@@ -27,6 +27,7 @@ int main(){
     drawLogic(&logicState, renderer);
   }
 
+  freeLogicState(&logicState);
   SDL_Quit();
   return 0;
 }
