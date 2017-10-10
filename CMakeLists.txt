@@ -3,4 +3,4 @@ project(CA)
 file(GLOB SRC_FILES *.c)
 add_executable(CA ${SRC_FILES})
 target_link_libraries(CA SDL2)
-
+target_compile_options(CA PRIVATE --pedantic -g)

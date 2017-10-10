@@ -12,7 +12,7 @@ typedef struct {
   bool isManual;
 } LogicState;
 
-
+void setupStartingCAPlanar(State **planar);
 State nextStepStateValue(const LogicState *logicState, int posX, int posY);
 
 LogicState initLogicState();

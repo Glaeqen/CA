@@ -21,10 +21,11 @@ int main(){
   EventState eventState = initEventState();
   LogicState logicState = initLogicState();
 
+  drawLogic(&logicState, renderer);
   while(eventState.isRunning){
     handleEvents(&eventState);
     updateLogic(&logicState, &eventState);
-    drawLogic(&logicState, renderer);
+    /* drawLogic(&logicState, renderer); */
   }
 
   freeLogicState(&logicState);
