@@ -66,7 +66,6 @@ void nextStep(LogicState *logicState){
       logicState->currentCAArray[i][j] = nextStepStateValue(logicState, i, j);
     }
   }
-  drawLogic(logicState, 0);
 }
 
 void updateLogic(LogicState *logicState, EventState *eventState){
@@ -88,16 +87,6 @@ void updateLogic(LogicState *logicState, EventState *eventState){
 }
 
 void drawLogic(LogicState *logicState, SDL_Renderer *renderer){
-  for (int i=0; i<CA_PLANAR_SIZE; ++i) {
-    for (int j=0; j<CA_PLANAR_SIZE; ++j) {
-      if(logicState->currentCAArray[i][j] == 1)
-        printf(ANSI_COLOR_GREEN "@ ");
-      else
-        printf(ANSI_COLOR_RED "X ");
-    }
-    printf("\n");
-  }
-  printf("\n\n");
 }
 
 int verifyConfig(){
