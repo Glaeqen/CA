@@ -21,8 +21,6 @@ void freeLogicState(LogicState *logicState);
 State getStateValue(const LogicState *logicState, int posX, int posY);
 void nextStep(LogicState* logicState);
 
-
 void updateLogic(LogicState *logicState, EventState *eventState);
-void drawLogic(LogicState *logicState, SDL_Renderer *renderer);
 
 int verifyConfig();

@@ -1,3 +1,5 @@
+#pragma once
+
 enum {
   /* Size of the CA planar. */
   CA_PLANAR_SIZE = 40,

@@ -86,9 +86,7 @@ void updateLogic(LogicState *logicState, EventState *eventState){
   }
 }
 
-void drawLogic(LogicState *logicState, SDL_Renderer *renderer){
-}
-
+// TODO
 int verifyConfig(){
   return 3;
 }
