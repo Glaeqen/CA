@@ -22,69 +22,55 @@ LogicState initLogicState(){
     }
   }
 
+  object.sizeCAArray = CA_PLANAR_SIZE;
   object.timeLastLogicUpdate = SDL_GetTicks();
-
   object.isManual = true;
+  object.amountOfStates = 2; /* TODO From file in future */
 
-  setupStartingCAPlanar(object.currentCAArray);
+  setupStartingCAPlanar(&object);
 
   return object;
 }
 
 void freeLogicState(LogicState *logicState){
-  for (int i=0; i<CA_PLANAR_SIZE; ++i) {
+  for (int i=0; i<logicState->sizeCAArray; ++i) {
     free(logicState->currentCAArray[i]);
   }
   free(logicState->currentCAArray);
+  logicState->currentCAArray = 0;
 
-  for (int i=0; i<CA_PLANAR_SIZE; ++i) {
+  for (int i=0; i<logicState->sizeCAArray; ++i) {
     free(logicState->previousCAArray[i]);
   }
   free(logicState->previousCAArray);
+  logicState->previousCAArray = 0;
 }
 
 State getStateValue(const LogicState *logicState, int posX, int posY){
 #define MOD(x, y) ((x)<0 ? ((x)%(y)+(y)) : ((x)%(y)))
   if (CA_PLANAR_EDGE_CONFIG != -1)
     if (posX<0 ||
-        posX>=CA_PLANAR_SIZE ||
+        posX>=logicState->sizeCAArray ||
         posY<0 ||
-        posY>=CA_PLANAR_SIZE)
+        posY>=logicState->sizeCAArray)
       return CA_PLANAR_EDGE_CONFIG;
-  return logicState->previousCAArray[MOD(posX, CA_PLANAR_SIZE)][MOD(posY, CA_PLANAR_SIZE)];
+  return logicState->previousCAArray[MOD(posX, logicState->sizeCAArray)][MOD(posY, logicState->sizeCAArray)];
 }
 
 void nextStep(LogicState *logicState){
-  for (int i=0; i<CA_PLANAR_SIZE; ++i) {
-    for (int j=0; j<CA_PLANAR_SIZE; ++j) {
+  for (int i=0; i<logicState->sizeCAArray; ++i) {
+    for (int j=0; j<logicState->sizeCAArray; ++j) {
       logicState->previousCAArray[i][j] = logicState->currentCAArray[i][j];
     }
   }
 
-  for (int i=0; i<CA_PLANAR_SIZE; ++i) {
-    for (int j=0; j<CA_PLANAR_SIZE; ++j) {
+  for (int i=0; i<logicState->sizeCAArray; ++i) {
+    for (int j=0; j<logicState->sizeCAArray; ++j) {
       logicState->currentCAArray[i][j] = nextStepStateValue(logicState, i, j);
     }
   }
 }
 
-void updateLogic(LogicState *logicState, EventState *eventState){
-  if (eventState->keyPressed == 'a') logicState->isManual = false;
-  if (eventState->keyPressed == 'm') logicState->isManual = true;
-  if (logicState->isManual) {
-    if(eventState->keyPressed == 'n') {
-      nextStep(logicState);
-      eventState->keyPressed = 0;
-    };
-  }
-  else {
-    Uint32 currentTime = SDL_GetTicks();
-    if(currentTime - logicState->timeLastLogicUpdate > CA_PLANAR_NEXT_STEP_TIME){
-      nextStep(logicState);
-      logicState->timeLastLogicUpdate = currentTime;
-    }
-  }
-}
 
 // TODO
 int verifyConfig(){
