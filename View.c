@@ -60,9 +60,10 @@ void drawLogic(View *view, LogicState *logicState){
   int sideArraySize = logicState->sizeCAArray;
   for (int i=0; i<sideArraySize; ++i) {
     for (int j=0; j<sideArraySize; ++j) {
-      SDL_SetRenderDrawColor(view->renderer, view->colorsArray[(int)getStateValue(logicState, i, j)][0],
-                             view->colorsArray[(int)getStateValue(logicState, i, j)][1],
-                             view->colorsArray[(int)getStateValue(logicState, i, j)][2],
+      SDL_SetRenderDrawColor(view->renderer,
+                             view->colorsArray[(int)getStateValue(logicState, i, j)][0], /* Red */
+                             view->colorsArray[(int)getStateValue(logicState, i, j)][1], /* Green */
+                             view->colorsArray[(int)getStateValue(logicState, i, j)][2], /* Blue */
                              SDL_ALPHA_OPAQUE);
       SDL_RenderFillRect(view->renderer, &view->cellsArray[sideArraySize*i + j]);
       SDL_RenderDrawRect(view->renderer, &view->cellsArray[sideArraySize*i + j]);

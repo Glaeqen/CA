@@ -6,19 +6,17 @@
 LogicState initLogicState(){
   LogicState object;
 
-  object.currentCAArray = (State **)malloc(sizeof(State*)*CA_PLANAR_SIZE);
+  object.currentCAArray = (State *)malloc(sizeof(State)*CA_PLANAR_SIZE*CA_PLANAR_SIZE);
   for (int i=0; i<CA_PLANAR_SIZE; ++i) {
-    object.currentCAArray[i] = (State *)malloc(sizeof(State)*CA_PLANAR_SIZE);
     for (int j=0; j<CA_PLANAR_SIZE; ++j) {
-      object.currentCAArray[i][j] = 0;
+      object.currentCAArray[CA_PLANAR_SIZE*i + j] = 0;
     }
   }
 
-  object.previousCAArray = (State **)malloc(sizeof(State*)*CA_PLANAR_SIZE);
+  object.previousCAArray = (State *)malloc(sizeof(State)*CA_PLANAR_SIZE*CA_PLANAR_SIZE);
   for (int i=0; i<CA_PLANAR_SIZE; ++i) {
-    object.previousCAArray[i] = (State *)malloc(sizeof(State)*CA_PLANAR_SIZE);
     for (int j=0; j<CA_PLANAR_SIZE; ++j) {
-      object.previousCAArray[i][j] = 0;
+      object.previousCAArray[CA_PLANAR_SIZE*i + j] = 0;
     }
   }
 
@@ -33,15 +31,9 @@ LogicState initLogicState(){
 }
 
 void freeLogicState(LogicState *logicState){
-  for (int i=0; i<logicState->sizeCAArray; ++i) {
-    free(logicState->currentCAArray[i]);
-  }
   free(logicState->currentCAArray);
   logicState->currentCAArray = 0;
 
-  for (int i=0; i<logicState->sizeCAArray; ++i) {
-    free(logicState->previousCAArray[i]);
-  }
   free(logicState->previousCAArray);
   logicState->previousCAArray = 0;
 }
@@ -54,19 +46,19 @@ State getStateValue(const LogicState *logicState, int posX, int posY){
         posY<0 ||
         posY>=logicState->sizeCAArray)
       return CA_PLANAR_EDGE_CONFIG;
-  return logicState->previousCAArray[MOD(posX, logicState->sizeCAArray)][MOD(posY, logicState->sizeCAArray)];
+  return logicState->previousCAArray[MOD(posX, logicState->sizeCAArray)*logicState->sizeCAArray + MOD(posY, logicState->sizeCAArray)];
 }
 
 void nextStep(LogicState *logicState){
   for (int i=0; i<logicState->sizeCAArray; ++i) {
     for (int j=0; j<logicState->sizeCAArray; ++j) {
-      logicState->previousCAArray[i][j] = logicState->currentCAArray[i][j];
+      logicState->previousCAArray[logicState->sizeCAArray*i + j] = logicState->currentCAArray[logicState->sizeCAArray*i + j];
     }
   }
 
   for (int i=0; i<logicState->sizeCAArray; ++i) {
     for (int j=0; j<logicState->sizeCAArray; ++j) {
-      logicState->currentCAArray[i][j] = nextStepStateValue(logicState, i, j);
+      logicState->currentCAArray[logicState->sizeCAArray*i + j] = nextStepStateValue(logicState, i, j);
     }
   }
 }

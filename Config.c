@@ -2,13 +2,8 @@
 /* Temporary solution for a Config input */
 
 void setupStartingCAPlanar(LogicState *logicState) {
-  /* planar[logicState->size / 2][logicState->size / 2] = 1; */
-  /* planar[logicState->size / 2 - 1][logicState->size / 2] = 1; */
-  /* planar[logicState->size / 2 - 2][logicState->size / 2] = 1; */
-  /* planar[logicState->size / 2 - 2][logicState->size / 2 + 1] = 1; */
-  /* planar[logicState->size / 2 - 1][logicState->size / 2 + 2] = 1; */
   for (int i=0; i<(logicState->sizeCAArray*logicState->sizeCAArray)*5/10; ++i) {
-    logicState->currentCAArray[rand()%logicState->sizeCAArray][rand()%logicState->sizeCAArray] = 1;
+    logicState->currentCAArray[(rand() % logicState->sizeCAArray)*logicState->sizeCAArray + rand() % logicState->sizeCAArray] = 1;
   }
 }
 

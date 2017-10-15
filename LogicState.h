@@ -5,8 +5,8 @@
 typedef char State;
 
 typedef struct {
-  State **currentCAArray;
-  State **previousCAArray;
+  State *currentCAArray;
+  State *previousCAArray;
   int sizeCAArray;
 
   Uint32 timeLastLogicUpdate;
