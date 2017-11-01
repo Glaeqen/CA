@@ -2,21 +2,21 @@
 
 /* Temporary solution for a Config input */
 
-void setupStartingCAPlanar(LogicState *logicState) {
-  for (int i = 0; i < (logicState->sizeCAArray * logicState->sizeCAArray) * 5 / 10; ++i) {
-    logicState->currentCAArray[(rand() % logicState->sizeCAArray) * logicState->sizeCAArray +
-                               rand() % logicState->sizeCAArray] = 1;
+void setupStartingCAPlanar(Logic *logic) {
+  for (int i = 0; i < (logic->sizeCAArray * logic->sizeCAArray) * 5 / 10; ++i) {
+    logic->currentCAArray[(rand() % logic->sizeCAArray) * logic->sizeCAArray +
+                               rand() % logic->sizeCAArray] = 1;
   }
 }
 
-State nextStepStateValue(const LogicState *logicState, int posX, int posY) {
+State nextStepStateValue(const Logic *logic, int posX, int posY) {
   /* Use getStateValue() to get appropriate state */
-  State currentCell = getStateValue(logicState, posX, posY);
+  State currentCell = getStateValue(logic, posX, posY);
   int sum = 0;
   for (int i = -1; i < 2; ++i) {
     for (int j = -1; j < 2; ++j) {
       if (i || j)
-        sum += getStateValue(logicState, posX + i, posY + j);
+        sum += getStateValue(logic, posX + i, posY + j);
     }
   }
 

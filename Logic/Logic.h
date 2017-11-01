@@ -14,14 +14,14 @@ typedef struct {
   bool isManual;
 
   Uint8 amountOfStates;
-} LogicState;
+} Logic;
 
-LogicState initLogicState();
+Logic initLogic();
 
-void freeLogicState(LogicState *logicState);
+void freeLogic(Logic *logic);
 
-State getStateValue(const LogicState *logicState, int posX, int posY);
+State getStateValue(const Logic *logic, int posX, int posY);
 
-void nextStep(LogicState *logicState);
+void nextStep(Logic *logic);
 
 int verifyConfig();

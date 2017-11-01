@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "LogicState.h"
+#include "../Logic/Logic.h"
 
 typedef struct {
   int windowWidth;
@@ -12,12 +12,11 @@ typedef struct {
   SDL_Rect *cellsArray;
   int cellsArraySize;
 
-  Uint8 (*colorsArray)[3];
-  int colorsArraySize;
+  Uint8 colorsArray[2][3];
 } View;
 
-View initView(int width, int height, LogicState *logicState);
+View initView(int width, int height, Logic *logic);
 
 void freeView(View *view);
 
-void drawLogic(View *view, LogicState *logicState);
+void drawLogic(View *view, Logic *logic);

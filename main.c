@@ -1,25 +1,25 @@
 /* Little program showcasing some cellular automaton/s. By Glaeqen. */
 #include <SDL2/SDL.h>
 #include <time.h>
-#include "EventState.h"
+#include "Event/Event.h"
 
 int main(int argc, char **argv) {
   SDL_Init(SDL_INIT_VIDEO);
   srand(time(NULL));
 
-  EventState eventState = initEventState();
-  LogicState logicState = initLogicState();
-  View view = initView(900, 900, &logicState /* to comprehend */);
+  Event event = initEvent();
+  Logic logic = initLogic();
+  View view = initView(400, 400, &logic /* to comprehend */);
 
-  while (eventState.isRunning) {
-    handleEvents(&eventState);
-    updateLogic(&eventState, &logicState);
-    updateView(&eventState, &view);
-    drawLogic(&view, &logicState);
+  while (event.isRunning) {
+    handleEvents(&event);
+    updateLogic(&event, &logic);
+    updateView(&event, &view);
+    drawLogic(&view, &logic);
   }
 
   freeView(&view);
-  freeLogicState(&logicState);
+  freeLogic(&logic);
   SDL_Quit();
   return 0;
 }

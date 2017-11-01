@@ -1,6 +1,6 @@
 #include "View.h"
 
-View initView(int width, int height, LogicState *logicState) {
+View initView(int width, int height, Logic *logic) {
   View object;
   object.windowWidth = width;
   object.windowHeight = height;
@@ -15,10 +15,11 @@ View initView(int width, int height, LogicState *logicState) {
 
   object.renderer = SDL_CreateRenderer(object.window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
-  object.cellsArraySize = logicState->sizeCAArray * logicState->sizeCAArray;
+  object.cellsArraySize = logic->sizeCAArray * logic->sizeCAArray;
   object.cellsArray = (SDL_Rect *) malloc(sizeof(SDL_Rect) * object.cellsArraySize);
+
   /* Set up sizes of rectangles */
-  int sideArraySize = logicState->sizeCAArray;
+  int sideArraySize = logic->sizeCAArray;
   int singleCellSize = width / sideArraySize;
   for (int i = 0; i < sideArraySize; ++i) {
     for (int j = 0; j < sideArraySize; ++j) {
@@ -28,18 +29,19 @@ View initView(int width, int height, LogicState *logicState) {
     }
   }
 
-  object.colorsArraySize = logicState->amountOfStates;
-  object.colorsArray = (Uint8(*)[3]) malloc(sizeof(Uint8[3]) * object.colorsArraySize);
-  for (int i = 0; i < object.colorsArraySize; ++i) {
-    for (int j = 0; j < 3; ++j) {
-      object.colorsArray[i][j] = rand() % 256;
-    }
-  }
+  // Dead - dark green
+  object.colorsArray[0][0] = 5;
+  object.colorsArray[0][1] = 71;
+  object.colorsArray[0][2] = 26;
+  // Alive - green
+  object.colorsArray[1][0] = 60;
+  object.colorsArray[1][1] = 255;
+  object.colorsArray[1][2] = 0;
 
   return object;
 }
 
-void printCells(LogicState *l, View *v) {
+void printCells(Logic *l, View *v) {
   View object = *v;
 
   int sideArraySize = l->sizeCAArray;
@@ -55,18 +57,16 @@ void printCells(LogicState *l, View *v) {
 void freeView(View *view) {
   free(view->cellsArray);
   view->cellsArray = 0;
-  free(view->colorsArray);
-  view->colorsArray = 0;
 }
 
-void drawLogic(View *view, LogicState *logicState) {
-  int sideArraySize = logicState->sizeCAArray;
+void drawLogic(View *view, Logic *logic) {
+  int sideArraySize = logic->sizeCAArray;
   for (int i = 0; i < sideArraySize; ++i) {
     for (int j = 0; j < sideArraySize; ++j) {
       SDL_SetRenderDrawColor(view->renderer,
-                             view->colorsArray[(int) getStateValue(logicState, i, j)][0], /* Red */
-                             view->colorsArray[(int) getStateValue(logicState, i, j)][1], /* Green */
-                             view->colorsArray[(int) getStateValue(logicState, i, j)][2], /* Blue */
+                             view->colorsArray[(int) getStateValue(logic, i, j)][0], /* Red */
+                             view->colorsArray[(int) getStateValue(logic, i, j)][1], /* Green */
+                             view->colorsArray[(int) getStateValue(logic, i, j)][2], /* Blue */
                              SDL_ALPHA_OPAQUE);
       SDL_RenderFillRect(view->renderer, &view->cellsArray[sideArraySize * i + j]);
       SDL_RenderDrawRect(view->renderer, &view->cellsArray[sideArraySize * i + j]);
