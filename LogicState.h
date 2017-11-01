@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SDL2/SDL.h>
 #include "stdbool.h"
 
@@ -16,9 +17,11 @@ typedef struct {
 } LogicState;
 
 LogicState initLogicState();
+
 void freeLogicState(LogicState *logicState);
 
 State getStateValue(const LogicState *logicState, int posX, int posY);
-void nextStep(LogicState* logicState);
+
+void nextStep(LogicState *logicState);
 
 int verifyConfig();

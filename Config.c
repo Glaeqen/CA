@@ -1,9 +1,11 @@
 #include "Config.h"
+
 /* Temporary solution for a Config input */
 
 void setupStartingCAPlanar(LogicState *logicState) {
-  for (int i=0; i<(logicState->sizeCAArray*logicState->sizeCAArray)*5/10; ++i) {
-    logicState->currentCAArray[(rand() % logicState->sizeCAArray)*logicState->sizeCAArray + rand() % logicState->sizeCAArray] = 1;
+  for (int i = 0; i < (logicState->sizeCAArray * logicState->sizeCAArray) * 5 / 10; ++i) {
+    logicState->currentCAArray[(rand() % logicState->sizeCAArray) * logicState->sizeCAArray +
+                               rand() % logicState->sizeCAArray] = 1;
   }
 }
 
@@ -19,13 +21,12 @@ State nextStepStateValue(const LogicState *logicState, int posX, int posY) {
   }
 
   if (currentCell) {
-    if(sum == 2 || sum == 3)
+    if (sum == 2 || sum == 3)
       return 1;
     else
       return 0;
-  }
-  else {
-    if(sum == 3)
+  } else {
+    if (sum == 3)
       return 1;
     else
       return 0;
