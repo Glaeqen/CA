@@ -59,6 +59,10 @@ void freeView(View *view) {
   view->cellsArray = 0;
 }
 
+void updateView(View *view, Event *event) {
+  //notused
+}
+
 void drawLogic(View *view, Logic *logic) {
   int sideArraySize = logic->sizeCAArray;
   for (int i = 0; i < sideArraySize; ++i) {

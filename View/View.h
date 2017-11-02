@@ -19,4 +19,6 @@ View initView(int width, int height, Logic *logic);
 
 void freeView(View *view);
 
+void updateView(View *view, Event *event);
+
 void drawLogic(View *view, Logic *logic);

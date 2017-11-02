@@ -47,8 +47,26 @@ State getStateValue(const Logic *logic, int posX, int posY) {
         posY >= logic->sizeCAArray)
       return CA_PLANAR_EDGE_CONFIG;
   return logic->previousCAArray[MOD(posX, logic->sizeCAArray) * logic->sizeCAArray +
-                                     MOD(posY, logic->sizeCAArray)];
+                                MOD(posY, logic->sizeCAArray)];
 }
+
+void updateLogic(Logic *logic, Event *event) {
+  if (event->keyPressed == 'a') logic->isManual = false;
+  if (event->keyPressed == 'm') logic->isManual = true;
+  if (logic->isManual) {
+    if (event->keyPressed == 'n') {
+      nextStep(logic);
+      event->keyPressed = 0;
+    };
+  } else {
+    Uint32 currentTime = SDL_GetTicks();
+    if (currentTime - logic->timeLastLogicUpdate > CA_PLANAR_NEXT_STEP_TIME) {
+      nextStep(logic);
+      logic->timeLastLogicUpdate = currentTime;
+    }
+  }
+}
+
 
 void nextStep(Logic *logic) {
   for (int i = 0; i < logic->sizeCAArray; ++i) {

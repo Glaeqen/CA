@@ -26,23 +26,3 @@ void handleEvents(Event *event) {
     }
   }
 }
-
-void updateLogic(Event *event, Logic *logic) {
-  if (event->keyPressed == 'a') logic->isManual = false;
-  if (event->keyPressed == 'm') logic->isManual = true;
-  if (logic->isManual) {
-    if (event->keyPressed == 'n') {
-      nextStep(logic);
-      event->keyPressed = 0;
-    };
-  } else {
-    Uint32 currentTime = SDL_GetTicks();
-    if (currentTime - logic->timeLastLogicUpdate > CA_PLANAR_NEXT_STEP_TIME) {
-      nextStep(logic);
-      logic->timeLastLogicUpdate = currentTime;
-    }
-  }
-}
-
-void updateView(Event *event, View *view) {
-}

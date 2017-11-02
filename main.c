@@ -1,7 +1,7 @@
 /* Little program showcasing some cellular automaton/s. By Glaeqen. */
 #include <SDL2/SDL.h>
 #include <time.h>
-#include "Event/Event.h"
+#include "View/View.h"
 
 int main(int argc, char **argv) {
   SDL_Init(SDL_INIT_VIDEO);
@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
 
   while (event.isRunning) {
     handleEvents(&event);
-    updateLogic(&event, &logic);
-    updateView(&event, &view);
+    updateLogic(&logic, &event);
+    updateView(&view, &event);
     drawLogic(&view, &logic);
   }
 
