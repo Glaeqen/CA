@@ -1,6 +1,6 @@
 #pragma once
 
-typedef struct {
+typedef struct Event{
   char isRunning;
   char keyPressed;
 } Event;

@@ -1,7 +1,5 @@
+#include <SDL2/SDL_events.h>
 #include "Event.h"
-
-/* Implementation of the proper config functions goes here. */
-#include "../Config.h"
 
 Event initEvent() {
   Event object;

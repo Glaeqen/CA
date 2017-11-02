@@ -1,7 +1,8 @@
-#include "View.h"
+#include "LogicView.h"
+#include "../Controllers/CmdController.h"
 
-View initView(int width, int height, Logic *logic) {
-  View object;
+LogicView initLogicView(LogicController logicController) {
+  LogicView object;
   object.windowWidth = width;
   object.windowHeight = height;
 
@@ -41,8 +42,8 @@ View initView(int width, int height, Logic *logic) {
   return object;
 }
 
-void printCells(Logic *l, View *v) {
-  View object = *v;
+void printCells(LogicModel *l, LogicView *v) {
+  LogicView object = *v;
 
   int sideArraySize = l->sizeCAArray;
   for (int i = 0; i < sideArraySize; ++i) {
@@ -54,16 +55,16 @@ void printCells(Logic *l, View *v) {
   }
 }
 
-void freeView(View *view) {
+void freeView(LogicView *view) {
   free(view->cellsArray);
   view->cellsArray = 0;
 }
 
-void updateView(View *view, Event *event) {
+void updateView(LogicView *view, Event *event) {
   //notused
 }
 
-void drawLogic(View *view, Logic *logic) {
+void drawLogic(LogicView *view, LogicModel *logic) {
   int sideArraySize = logic->sizeCAArray;
   for (int i = 0; i < sideArraySize; ++i) {
     for (int j = 0; j < sideArraySize; ++j) {
