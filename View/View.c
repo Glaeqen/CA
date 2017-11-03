@@ -1,8 +1,8 @@
 #include "View.h"
 
-void initView(View *view, int width, int height){
+void initView(View *view, int width, int height) {
   view->window = SDL_CreateWindow("CA", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
-                                   SDL_WINDOW_OPENGL);
+                                  SDL_WINDOW_OPENGL);
 
   if (!view->window) {
     SDL_Log("Could not create a window.\n");
@@ -15,5 +15,5 @@ void initView(View *view, int width, int height){
   view->height = height;
 }
 
-void freeView(View *view){
+void freeView(View *view) {
 }

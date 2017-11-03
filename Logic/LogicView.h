@@ -5,7 +5,7 @@
 typedef struct LogicController LogicController;
 typedef struct View View;
 
-typedef struct LogicView{
+typedef struct LogicView {
   LogicController *logicController;
   View *view;
 

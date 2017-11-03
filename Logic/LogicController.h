@@ -8,7 +8,7 @@ typedef struct LogicModel LogicModel;
 typedef struct View View;
 typedef struct LogicView LogicView;
 
-typedef struct LogicController{
+typedef struct LogicController {
   Event *event;
   LogicModel *logicModel;
   LogicView *logicView;
@@ -20,11 +20,9 @@ typedef struct LogicController{
 } LogicController;
 
 void initLogicController(LogicController *logicController, Event *event, View *view);
+
 void freeLogicController(LogicController *logicController);
 
-static void updateLogicController(LogicController *logicController);
-static void updateLogicModel(LogicController *logicController);
-static void updateLogicView(LogicController *logicController);
 void updateLogic(LogicController *logicController);
 
 void setTimeBetweenSteps(LogicController *logicController, Uint32 timeBetweenSteps);

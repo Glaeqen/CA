@@ -1,8 +1,7 @@
 #include "Application.h"
-#include "Views/View.h"
-#include "Defaults.h"
-#include "Event/Event.h"
-#include <SDL2/SDL.h>
+#include "../View/View.h"
+#include "../Defaults.h"
+#include "../Event/Event.h"
 #include <time.h>
 
 void initApplication(Application *application) {
@@ -37,6 +36,8 @@ void freeApplication(Application *application) {
   if (!application) return;
 //  freeCmdController(application->cmdController);
   freeLogicController(application->logicController);
+  freeView(application->view);
+  freeEvent(application->event);
   SDL_Quit();
 }
 

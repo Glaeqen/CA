@@ -1,7 +1,7 @@
 #include "LogicView.h"
-#include "../Controllers/LogicController.h"
-#include "View.h"
-#include "../Models/LogicModel.h"
+#include "LogicController.h"
+#include "../View/View.h"
+#include "LogicModel.h"
 
 void initLogicView(LogicView *logicView, LogicController *logicController, View *view) {
   logicView->logicController = logicController;
@@ -44,12 +44,21 @@ void freeLogicView(LogicView *logicView) {
 void drawLogicView(LogicView *logicView) {
   int sizeX = logicView->cellsArraySizeX;
   int sizeY = logicView->cellsArraySizeY;
+  SDL_SetRenderDrawColor(logicView->view->renderer,
+                         logicView->colorsArray[0][0],
+                         logicView->colorsArray[0][1],
+                         logicView->colorsArray[0][2],
+                         SDL_ALPHA_OPAQUE);
+  SDL_RenderClear(logicView->view->renderer);
   for (int y = 0; y < sizeY; ++y) {
     for (int x = 0; x < sizeX; ++x) {
       SDL_SetRenderDrawColor(logicView->view->renderer,
-                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x, y)][0], /* Red */
-                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x, y)][1], /* Green */
-                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x, y)][2], /* Blue */
+                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x,
+                                                                        y)][0], /* Red */
+                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x,
+                                                                        y)][1], /* Green */
+                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x,
+                                                                        y)][2], /* Blue */
                              SDL_ALPHA_OPAQUE);
       SDL_RenderFillRect(logicView->view->renderer, &logicView->cellsArray[sizeX * y + x]);
       SDL_RenderDrawRect(logicView->view->renderer, &logicView->cellsArray[sizeX * y + x]);

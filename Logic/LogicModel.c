@@ -51,7 +51,7 @@ void randomizePlanar(LogicModel *logicModel, double alivePercentage) {
   }
 }
 
-void setStateValue(LogicModel *logicModel, int posX, int posY, State value){
+void setStateValue(LogicModel *logicModel, int posX, int posY, State value) {
   logicModel->currentPlanar[posY * logicModel->planarSizeX + posX] = value;
 }
 
@@ -68,7 +68,7 @@ State getStateValue(const LogicModel *logicModel, int posX, int posY) {
 }
 
 
-State nextStepStateValue(const LogicModel *logicModel, int posX, int posY) {
+static State nextStepStateValue(const LogicModel *logicModel, int posX, int posY) {
   State currentCell = getStateValue(logicModel, posX, posY);
   int sum = 0;
   for (int i = -1; i < 2; ++i) {
@@ -91,7 +91,7 @@ State nextStepStateValue(const LogicModel *logicModel, int posX, int posY) {
   }
 }
 
-void overwriteArray(LogicModel *logicModel) {
+static void overwriteArray(LogicModel *logicModel) {
   for (int y = 0; y < logicModel->planarSizeY; ++y) {
     for (int x = 0; x < logicModel->planarSizeX; ++x) {
       logicModel->previousPlanar[logicModel->planarSizeX * y + x] = logicModel->currentPlanar[
@@ -114,10 +114,10 @@ void setEdgeConfiguration(LogicModel *logicModel, Uint8 edgeConfiguration) {
   logicModel->edgeConfiguration = edgeConfiguration;
 }
 
-int getSizeX(LogicModel *logicModel){
+int getSizeX(LogicModel *logicModel) {
   return logicModel->planarSizeX;
 }
 
-int getSizeY(LogicModel *logicModel){
+int getSizeY(LogicModel *logicModel) {
   return logicModel->planarSizeY;
 }

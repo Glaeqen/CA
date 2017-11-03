@@ -28,10 +28,6 @@ void setStateValue(LogicModel *logicModel, int posX, int posY, State value);
 
 State getStateValue(const LogicModel *logicModel, int posY, int posX);
 
-static State nextStepStateValue(const LogicModel *logicModel, int posX, int posY);
-
-static void overwriteArray(LogicModel *logicModel);
-
 void nextStep(LogicModel *logicModel);
 
 void setEdgeConfiguration(LogicModel *logicModel, Uint8 edgeConfiguration);

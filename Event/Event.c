@@ -23,6 +23,6 @@ void handleEvents(Event *event) {
   }
 }
 
-void freeEvent(Event *event){
+void freeEvent(Event *event) {
 
 }

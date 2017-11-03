@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "CmdController.h"
-#include "LogicController.h"
+#include "../Logic/LogicController.h"
 
 void initCmdController(CmdController *cmdController, LogicController *logicController, Event *event, View *view) {
   cmdController->logicController = logicController;

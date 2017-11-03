@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-typedef struct View{
+typedef struct View {
   SDL_Window *window;
   SDL_Renderer *renderer;
   int width;

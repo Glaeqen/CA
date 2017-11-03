@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include "../Defaults.h"
 #include "LogicController.h"
-#include "../Models/LogicModel.h"
-#include "../Views/LogicView.h"
+#include "LogicModel.h"
+#include "LogicView.h"
 
 void initLogicController(LogicController *logicController, Event *event, View *view) {
   logicController->event = event;
@@ -28,12 +28,12 @@ void freeLogicController(LogicController *logicController) {
   logicController->logicModel = NULL;
 }
 
-void updateLogicController(LogicController *logicController) {
+static void updateLogicController(LogicController *logicController) {
   if (logicController->event->keyPressed == 'a') logicController->isManual = false;
   if (logicController->event->keyPressed == 'm') logicController->isManual = true;
 }
 
-void updateLogicModel(LogicController *logicController) {
+static void updateLogicModel(LogicController *logicController) {
   // Manual control
   if (logicController->isManual) {
     if (logicController->event->keyPressed == 'n') {
@@ -51,7 +51,7 @@ void updateLogicModel(LogicController *logicController) {
   }
 }
 
-void updateLogicView(LogicController *logicController) {
+static void updateLogicView(LogicController *logicController) {
   drawLogicView(logicController->logicView);
 }
 
@@ -61,6 +61,6 @@ void updateLogic(LogicController *logicController) {
   updateLogicView(logicController);
 }
 
-void setTimeBetweenSteps(LogicController *logicController, Uint32 timeBetweenSteps){
+void setTimeBetweenSteps(LogicController *logicController, Uint32 timeBetweenSteps) {
   logicController->timeBetweenSteps = timeBetweenSteps;
 }

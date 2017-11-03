@@ -14,4 +14,5 @@ typedef struct CmdController {
 } CmdController;
 
 void initCmdController(CmdController *cmdController, LogicController *logicController, Event *event, View *view);
+
 void freeCmdController(CmdController *cmdController);
