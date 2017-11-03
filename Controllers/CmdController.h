@@ -2,6 +2,7 @@
 
 typedef struct Event Event;
 typedef struct CmdModel CmdModel;
+typedef struct View View;
 typedef struct CmdView CmdView;
 typedef struct LogicController LogicController;
 
@@ -12,5 +13,5 @@ typedef struct CmdController {
   CmdView *cmdView;
 } CmdController;
 
-CmdController initCmdController(LogicController *logicController);
+void initCmdController(CmdController *cmdController, LogicController *logicController, Event *event, View *view);
 void freeCmdController(CmdController *cmdController);

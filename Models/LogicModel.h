@@ -6,28 +6,36 @@
 
 typedef char State;
 
-typedef struct LogicModel{
-  // Data
-  State *currentCAArray;
-  State *previousCAArray;
-  int sizeCAArray;
+typedef struct LogicModel {
+  State *currentPlanar;
+  State *previousPlanar;
+  int planarSizeX;
+  int planarSizeY;
 
   // Properties
-  Uint32 timeLastLogicUpdate;
-  bool isManual;
-
-  Uint32 timeBetweenSteps;
-  Uint8 edgeConfig;
+  State edgeConfiguration;
 } LogicModel;
 
-LogicModel initLogic();
+void initLogicModel(LogicModel *logicModel);
 
-void freeLogic(LogicModel *logic);
+void reInitLogicModel(LogicModel *logicModel, int xSize, int ySize, Uint8 edgeConfiguration);
 
-void updateLogic(LogicModel *logic, Event *event);
+void freeLogicModel(LogicModel *logicModel);
 
-State getStateValue(const LogicModel *logic, int posX, int posY);
+void randomizePlanar(LogicModel *logicModel, double alivePercentage);
 
-void nextStep(LogicModel *logic);
+void setStateValue(LogicModel *logicModel, int posX, int posY, State value);
 
-int verifyConfig();
+State getStateValue(const LogicModel *logicModel, int posY, int posX);
+
+static State nextStepStateValue(const LogicModel *logicModel, int posX, int posY);
+
+static void overwriteArray(LogicModel *logicModel);
+
+void nextStep(LogicModel *logicModel);
+
+void setEdgeConfiguration(LogicModel *logicModel, Uint8 edgeConfiguration);
+
+int getSizeX(LogicModel *logicModel);
+
+int getSizeY(LogicModel *logicModel);

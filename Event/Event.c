@@ -1,11 +1,9 @@
 #include <SDL2/SDL_events.h>
 #include "Event.h"
 
-Event initEvent() {
-  Event object;
-  object.isRunning = 1;
-  object.keyPressed = 0;
-  return object;
+void initEvent(Event *event) {
+  event->isRunning = 1;
+  event->keyPressed = 0;
 }
 
 void handleEvents(Event *event) {
@@ -23,4 +21,8 @@ void handleEvents(Event *event) {
         break;
     }
   }
+}
+
+void freeEvent(Event *event){
+
 }

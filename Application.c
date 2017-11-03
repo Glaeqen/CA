@@ -1,47 +1,48 @@
 #include "Application.h"
+#include "Views/View.h"
+#include "Defaults.h"
+#include "Event/Event.h"
 #include <SDL2/SDL.h>
 #include <time.h>
 
-Application initApplication(){
-  Application application;
-
-  LogicController *logicController = malloc(sizeof(LogicController));
-  *logicController = initLogicController();
-  application.logicController = logicController;
-
-  CmdController *cmdController = malloc(sizeof(CmdController));
-  *cmdController = initCmdController(logicController);
-  application.cmdController = cmdController;
-
-  return application;
-}
-
-void mainLoop(Application *application){
+void initApplication(Application *application) {
   SDL_Init(SDL_INIT_VIDEO);
   srand(time(NULL));
+  View *view = malloc(sizeof(View));
+  initView(view, DEFAULT_WINDOW_SIZE_XY, DEFAULT_WINDOW_SIZE_XY);
+  application->view = view;
 
-  Event event = initEvent();
-  LogicModel logic = initLogic();
-  LogicView view = initView(400, 400, &logic /* to comprehend */);
+  Event *event = malloc(sizeof(Event));
+  initEvent(event);
+  application->event = event;
 
-  while (event.isRunning) {
-    handleEvents(&event);
-    updateLogic(&logic, &event);
-    updateView(&view, &event);
-    drawLogic(&view, &logic);
+  LogicController *logicController = malloc(sizeof(LogicController));
+  initLogicController(logicController, event, view);
+  application->logicController = logicController;
+
+//  CmdController *cmdController = malloc(sizeof(CmdController));
+//  *cmdController = initCmdController(logicController, event, view);
+//  application->cmdController = cmdController;
+}
+
+void mainLoop(Application *application) {
+  while (application->event->isRunning) {
+    handleEvents(application->event);
+    updateLogic(application->logicController);
+//    updateCmd(application->cmdController);
   }
+}
 
-  freeView(&view);
-  freeLogic(&logic);
+void freeApplication(Application *application) {
+  if (!application) return;
+//  freeCmdController(application->cmdController);
+  freeLogicController(application->logicController);
   SDL_Quit();
 }
 
-int main(){
-  Application application = initApplication();
+int main() {
+  Application application;
+  initApplication(&application);
   mainLoop(&application);
-}
-
-void freeApplication(Application *application){
-  freeCmdController(application->cmdController);
-  freeLogicController(application->logicController);
+  freeApplication(&application);
 }

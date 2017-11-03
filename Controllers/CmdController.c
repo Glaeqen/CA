@@ -2,24 +2,25 @@
 #include "CmdController.h"
 #include "LogicController.h"
 
-CmdController initCmdController(LogicController* logicController){
-  CmdController cmdController;
-  cmdController.logicController = logicController;
+void initCmdController(CmdController *cmdController, LogicController *logicController, Event *event, View *view) {
+  cmdController->logicController = logicController;
 
-  cmdController.event = logicController->event;
+  cmdController->event = event;
 
   CmdModel *cmdModel = malloc(sizeof(cmdModel));
-  *cmdModel = initCmdModel();
-  cmdController.cmdModel = cmdModel;
+  initCmdModel(cmdModel);
+  cmdController->cmdModel = cmdModel;
 
   CmdView *cmdView = malloc(sizeof(cmdView));
-  *cmdView = initCmdView(cmdController);
-  cmdController.cmdView = cmdView;
-
-  return cmdController;
+  initCmdView(cmdView, cmdController, view);
+  cmdController->cmdView = cmdView;
 }
 
-void freeCmdController(CmdController *cmdController){
+void freeCmdController(CmdController *cmdController) {
+  if (!cmdController) return;
   freeCmdModel(cmdController->cmdModel);
+  cmdController->cmdModel = NULL;
+
   freeCmdView(cmdController->cmdView);
+  cmdController->cmdView = NULL;
 }

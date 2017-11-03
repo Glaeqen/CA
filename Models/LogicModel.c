@@ -1,32 +1,80 @@
 #include "LogicModel.h"
+#include "../Defaults.h"
 
-enum {
-  /* Size of the CA planar. */
-        CA_PLANAR_SIZE = 40,
-  /* Time between next steps when in auto mode. */
-        CA_PLANAR_NEXT_STEP_TIME = 100,
-  /* Modes for planar's edges.
-     -1 - Wrap around
-     number != -1 -> Edge immutable state is `number` state.
-  */
-        CA_PLANAR_EDGE_CONFIG = -1
-};
+void initLogicModel(LogicModel *logicModel) {
+  reInitLogicModel(logicModel, DEFAULT_PLANAR_SIZE, DEFAULT_PLANAR_SIZE, DEFAULT_EDGE_CONFIG);
+  randomizePlanar(logicModel, DEFAULT_ALIVE_PERCENTAGE / 100.);
+}
 
-void setupStartingCAPlanar(LogicModel *logic) {
-  for (int i = 0; i < (logic->sizeCAArray * logic->sizeCAArray) * 5 / 10; ++i) {
-    logic->currentCAArray[(rand() % logic->sizeCAArray) * logic->sizeCAArray +
-                               rand() % logic->sizeCAArray] = 1;
+void reInitLogicModel(LogicModel *logicModel, int xSize, int ySize, Uint8 edgeConfiguration) {
+  logicModel->currentPlanar = (State *) malloc(sizeof(State) * xSize * ySize);
+  for (int y = 0; y < ySize; ++y) {
+    for (int x = 0; x < xSize; ++x) {
+      logicModel->currentPlanar[xSize * y + x] = 0;
+    }
+  }
+
+  logicModel->previousPlanar = (State *) malloc(sizeof(State) * xSize * ySize);
+  for (int y = 0; y < ySize; ++y) {
+    for (int x = 0; x < xSize; ++x) {
+      logicModel->previousPlanar[xSize * y + x] = 0;
+    }
+  }
+
+  logicModel->planarSizeX = xSize;
+  logicModel->planarSizeY = ySize;
+
+  logicModel->edgeConfiguration = edgeConfiguration;
+}
+
+void freeLogicModel(LogicModel *logicModel) {
+  if (!logicModel) return;
+  if (logicModel->currentPlanar) {
+    free(logicModel->currentPlanar);
+    logicModel->currentPlanar = NULL;
+  }
+
+  if (logicModel->previousPlanar) {
+    free(logicModel->previousPlanar);
+    logicModel->previousPlanar = NULL;
   }
 }
 
-State nextStepStateValue(const LogicModel *logic, int posX, int posY) {
-  /* Use getStateValue() to get appropriate state */
-  State currentCell = getStateValue(logic, posX, posY);
+void randomizePlanar(LogicModel *logicModel, double alivePercentage) {
+  for (int i = 0; i < (logicModel->planarSizeX * logicModel->planarSizeY); ++i) {
+    if (rand() / (RAND_MAX + 1.) < alivePercentage)
+      logicModel->currentPlanar[(rand() % logicModel->planarSizeY) * logicModel->planarSizeX +
+                                rand() % logicModel->planarSizeX] = 1;
+    else
+      logicModel->currentPlanar[(rand() % logicModel->planarSizeY) * logicModel->planarSizeX +
+                                rand() % logicModel->planarSizeX] = 0;
+  }
+}
+
+void setStateValue(LogicModel *logicModel, int posX, int posY, State value){
+  logicModel->currentPlanar[posY * logicModel->planarSizeX + posX] = value;
+}
+
+State getStateValue(const LogicModel *logicModel, int posX, int posY) {
+#define MOD(x, y) ((x)<0 ? ((x)%(y)+(y)) : ((x)%(y)))
+  if (logicModel->edgeConfiguration != -1)
+    if (posY < 0 ||
+        posY >= logicModel->planarSizeY ||
+        posX < 0 ||
+        posX >= logicModel->planarSizeX)
+      return logicModel->edgeConfiguration;
+  return logicModel->previousPlanar[MOD(posY, logicModel->planarSizeY) * logicModel->planarSizeX +
+                                    MOD(posX, logicModel->planarSizeX)];
+}
+
+
+State nextStepStateValue(const LogicModel *logicModel, int posX, int posY) {
+  State currentCell = getStateValue(logicModel, posX, posY);
   int sum = 0;
   for (int i = -1; i < 2; ++i) {
     for (int j = -1; j < 2; ++j) {
       if (i || j)
-        sum += getStateValue(logic, posX + i, posY + j);
+        sum += getStateValue(logicModel, posX + i, posY + j);
     }
   }
 
@@ -43,89 +91,33 @@ State nextStepStateValue(const LogicModel *logic, int posX, int posY) {
   }
 }
 
-LogicModel initLogic() {
-  LogicModel object;
-
-  object.currentCAArray = (State *) malloc(sizeof(State) * CA_PLANAR_SIZE * CA_PLANAR_SIZE);
-  for (int i = 0; i < CA_PLANAR_SIZE; ++i) {
-    for (int j = 0; j < CA_PLANAR_SIZE; ++j) {
-      object.currentCAArray[CA_PLANAR_SIZE * i + j] = 0;
-    }
-  }
-
-  object.previousCAArray = (State *) malloc(sizeof(State) * CA_PLANAR_SIZE * CA_PLANAR_SIZE);
-  for (int i = 0; i < CA_PLANAR_SIZE; ++i) {
-    for (int j = 0; j < CA_PLANAR_SIZE; ++j) {
-      object.previousCAArray[CA_PLANAR_SIZE * i + j] = 0;
-    }
-  }
-
-  object.sizeCAArray = CA_PLANAR_SIZE;
-  object.timeLastLogicUpdate = SDL_GetTicks();
-  object.isManual = true;
-
-  object.timeBetweenSteps = CA_PLANAR_NEXT_STEP_TIME;
-  object.edgeConfig = CA_PLANAR_EDGE_CONFIG;
-
-  setupStartingCAPlanar(&object);
-
-  return object;
-}
-
-void freeLogic(LogicModel *logic) {
-  free(logic->currentCAArray);
-  logic->currentCAArray = 0;
-
-  free(logic->previousCAArray);
-  logic->previousCAArray = 0;
-}
-
-void updateLogic(LogicModel *logic, Event *event) {
-  if (event->keyPressed == 'a') logic->isManual = false;
-  if (event->keyPressed == 'm') logic->isManual = true;
-  if (logic->isManual) {
-    if (event->keyPressed == 'n') {
-      nextStep(logic);
-      event->keyPressed = 0;
-    };
-  } else {
-    Uint32 currentTime = SDL_GetTicks();
-    if (currentTime - logic->timeLastLogicUpdate > CA_PLANAR_NEXT_STEP_TIME) {
-      nextStep(logic);
-      logic->timeLastLogicUpdate = currentTime;
+void overwriteArray(LogicModel *logicModel) {
+  for (int y = 0; y < logicModel->planarSizeY; ++y) {
+    for (int x = 0; x < logicModel->planarSizeX; ++x) {
+      logicModel->previousPlanar[logicModel->planarSizeX * y + x] = logicModel->currentPlanar[
+            logicModel->planarSizeX * y + x];
     }
   }
 }
 
-State getStateValue(const LogicModel *logic, int posX, int posY) {
-#define MOD(x, y) ((x)<0 ? ((x)%(y)+(y)) : ((x)%(y)))
-  if (logic->edgeConfig != -1)
-    if (posX < 0 ||
-        posX >= logic->sizeCAArray ||
-        posY < 0 ||
-        posY >= logic->sizeCAArray)
-      return logic->edgeConfig;
-  return logic->previousCAArray[MOD(posX, logic->sizeCAArray) * logic->sizeCAArray +
-                                MOD(posY, logic->sizeCAArray)];
-}
-
-void nextStep(LogicModel *logic) {
-  for (int i = 0; i < logic->sizeCAArray; ++i) {
-    for (int j = 0; j < logic->sizeCAArray; ++j) {
-      logic->previousCAArray[logic->sizeCAArray * i + j] = logic->currentCAArray[
-            logic->sizeCAArray * i + j];
+void nextStep(LogicModel *logicModel) {
+  overwriteArray(logicModel);
+  for (int y = 0; y < logicModel->planarSizeY; ++y) {
+    for (int x = 0; x < logicModel->planarSizeX; ++x) {
+      logicModel->currentPlanar[logicModel->planarSizeX * y + x] = nextStepStateValue(logicModel, x, y);
     }
   }
 
-  for (int i = 0; i < logic->sizeCAArray; ++i) {
-    for (int j = 0; j < logic->sizeCAArray; ++j) {
-      logic->currentCAArray[logic->sizeCAArray * i + j] = nextStepStateValue(logic, i, j);
-    }
-  }
 }
 
+void setEdgeConfiguration(LogicModel *logicModel, Uint8 edgeConfiguration) {
+  logicModel->edgeConfiguration = edgeConfiguration;
+}
 
-// TODO
-int verifyConfig() {
-  return 3;
+int getSizeX(LogicModel *logicModel){
+  return logicModel->planarSizeX;
+}
+
+int getSizeY(LogicModel *logicModel){
+  return logicModel->planarSizeY;
 }

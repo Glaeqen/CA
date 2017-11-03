@@ -1,83 +1,61 @@
 #include "LogicView.h"
-#include "../Controllers/CmdController.h"
+#include "../Controllers/LogicController.h"
+#include "View.h"
+#include "../Models/LogicModel.h"
 
-LogicView initLogicView(LogicController logicController) {
-  LogicView object;
-  object.windowWidth = width;
-  object.windowHeight = height;
+void initLogicView(LogicView *logicView, LogicController *logicController, View *view) {
+  logicView->logicController = logicController;
+  logicView->view = view;
 
-  object.window = SDL_CreateWindow("CA", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
-                                   SDL_WINDOW_OPENGL);
-
-  if (!object.window) {
-    fprintf(stderr, "Could not create a window.\n");
-    exit(-1);
-  }
-
-  object.renderer = SDL_CreateRenderer(object.window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-
-  object.cellsArraySize = logic->sizeCAArray * logic->sizeCAArray;
-  object.cellsArray = (SDL_Rect *) malloc(sizeof(SDL_Rect) * object.cellsArraySize);
+  int sizeX = logicView->cellsArraySizeX = getSizeX(logicController->logicModel);
+  int sizeY = logicView->cellsArraySizeY = getSizeY(logicController->logicModel);
+  logicView->cellsArray = (SDL_Rect *) malloc(sizeof(SDL_Rect) * sizeX * sizeY);
 
   /* Set up sizes of rectangles */
-  int sideArraySize = logic->sizeCAArray;
-  int singleCellSize = width / sideArraySize;
-  for (int i = 0; i < sideArraySize; ++i) {
-    for (int j = 0; j < sideArraySize; ++j) {
-      object.cellsArray[sideArraySize * i + j].x = singleCellSize * i;
-      object.cellsArray[sideArraySize * i + j].y = singleCellSize * j;
-      object.cellsArray[sideArraySize * i + j].h = object.cellsArray[sideArraySize * i + j].w = singleCellSize;
+  int singleCellSizeX = view->width / sizeX;
+  int singleCellSizeY = view->height / sizeY;
+  for (int y = 0; y < sizeY; ++y) {
+    for (int x = 0; x < sizeX; ++x) {
+      logicView->cellsArray[sizeX * y + x].x = singleCellSizeX * x;
+      logicView->cellsArray[sizeX * y + x].y = singleCellSizeY * y;
+      logicView->cellsArray[sizeX * y + x].h = singleCellSizeY;
+      logicView->cellsArray[sizeX * y + x].w = singleCellSizeX;
     }
   }
 
   // Dead - dark green
-  object.colorsArray[0][0] = 5;
-  object.colorsArray[0][1] = 71;
-  object.colorsArray[0][2] = 26;
+  logicView->colorsArray[0][0] = 5;
+  logicView->colorsArray[0][1] = 71;
+  logicView->colorsArray[0][2] = 26;
   // Alive - green
-  object.colorsArray[1][0] = 60;
-  object.colorsArray[1][1] = 255;
-  object.colorsArray[1][2] = 0;
-
-  return object;
+  logicView->colorsArray[1][0] = 60;
+  logicView->colorsArray[1][1] = 255;
+  logicView->colorsArray[1][2] = 0;
 }
 
-void printCells(LogicModel *l, LogicView *v) {
-  LogicView object = *v;
-
-  int sideArraySize = l->sizeCAArray;
-  for (int i = 0; i < sideArraySize; ++i) {
-    for (int j = 0; j < sideArraySize; ++j) {
-      printf("x: %d, y: %d, w: %d, h: %d\n", object.cellsArray[sideArraySize * i + j].x,
-             object.cellsArray[sideArraySize * i + j].y, object.cellsArray[sideArraySize * i + j].w,
-             object.cellsArray[sideArraySize * i + j].h);
-    }
+void freeLogicView(LogicView *logicView) {
+  if (!logicView) return;
+  if (logicView->cellsArray) {
+    free(logicView->cellsArray);
+    logicView->cellsArray = NULL;
   }
 }
 
-void freeView(LogicView *view) {
-  free(view->cellsArray);
-  view->cellsArray = 0;
-}
-
-void updateView(LogicView *view, Event *event) {
-  //notused
-}
-
-void drawLogic(LogicView *view, LogicModel *logic) {
-  int sideArraySize = logic->sizeCAArray;
-  for (int i = 0; i < sideArraySize; ++i) {
-    for (int j = 0; j < sideArraySize; ++j) {
-      SDL_SetRenderDrawColor(view->renderer,
-                             view->colorsArray[(int) getStateValue(logic, i, j)][0], /* Red */
-                             view->colorsArray[(int) getStateValue(logic, i, j)][1], /* Green */
-                             view->colorsArray[(int) getStateValue(logic, i, j)][2], /* Blue */
+void drawLogicView(LogicView *logicView) {
+  int sizeX = logicView->cellsArraySizeX;
+  int sizeY = logicView->cellsArraySizeY;
+  for (int y = 0; y < sizeY; ++y) {
+    for (int x = 0; x < sizeX; ++x) {
+      SDL_SetRenderDrawColor(logicView->view->renderer,
+                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x, y)][0], /* Red */
+                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x, y)][1], /* Green */
+                             logicView->colorsArray[(int) getStateValue(logicView->logicController->logicModel, x, y)][2], /* Blue */
                              SDL_ALPHA_OPAQUE);
-      SDL_RenderFillRect(view->renderer, &view->cellsArray[sideArraySize * i + j]);
-      SDL_RenderDrawRect(view->renderer, &view->cellsArray[sideArraySize * i + j]);
+      SDL_RenderFillRect(logicView->view->renderer, &logicView->cellsArray[sizeX * y + x]);
+      SDL_RenderDrawRect(logicView->view->renderer, &logicView->cellsArray[sizeX * y + x]);
     }
   }
-  SDL_RenderPresent(view->renderer);
+  SDL_RenderPresent(logicView->view->renderer);
 }
 
 

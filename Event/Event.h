@@ -5,6 +5,8 @@ typedef struct Event{
   char keyPressed;
 } Event;
 
-Event initEvent();
+void initEvent(Event *event);
 
 void handleEvents(Event *event);
+
+void freeEvent(Event *event);

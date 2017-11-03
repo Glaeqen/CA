@@ -4,10 +4,12 @@
 #include "Controllers/LogicController.h"
 
 typedef struct Application{
+  View *view;
+  Event *event;
   LogicController *logicController;
-  CmdController *cmdController;
+//  CmdController *cmdController;
 } Application;
 
-static Application initApplication();
+static void initApplication(Application *application);
 static void mainLoop(Application *application);
 static void freeApplication(Application *application);

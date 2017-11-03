@@ -1,20 +1,23 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "../Logic/LogicModel.h"
-#include "../Controllers/CmdController.h"
+
+typedef struct LogicController LogicController;
+typedef struct View View;
 
 typedef struct LogicView{
+  LogicController *logicController;
+  View *view;
+
   SDL_Rect *cellsArray;
-  int cellsArraySize;
+  int cellsArraySizeX;
+  int cellsArraySizeY;
 
   Uint8 colorsArray[2][3];
 } LogicView;
 
-LogicView initLogicView(LogicController logicController);
+void initLogicView(LogicView *logicView, LogicController *logicController, View *view);
 
-void freeView(LogicView *view);
+void freeLogicView(LogicView *logicView);
 
-void updateView(LogicView *view, Event *event);
-
-void drawLogic(LogicView *view, LogicModel *logic);
+void drawLogicView(LogicView *logicView);
