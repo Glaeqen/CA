@@ -17,10 +17,15 @@ void initCmdController(CmdController *cmdController, LogicController *logicContr
 }
 
 void freeCmdController(CmdController *cmdController) {
-  if (!cmdController) return;
-  freeCmdModel(cmdController->cmdModel);
-  cmdController->cmdModel = NULL;
+  if (cmdController->cmdModel) {
+    freeCmdModel(cmdController->cmdModel);
+    free(cmdController->cmdModel);
+    cmdController->cmdModel = NULL;
+  }
 
-  freeCmdView(cmdController->cmdView);
-  cmdController->cmdView = NULL;
+  if (cmdController->cmdView) {
+    freeCmdView(cmdController->cmdView);
+    free(cmdController->cmdView);
+    cmdController->cmdView = NULL;
+  }
 }

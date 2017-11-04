@@ -1,43 +1,56 @@
 #include "Application.h"
-#include "../View/View.h"
 #include "../Defaults.h"
 #include "../Event/Event.h"
+#include "../ViewHolder/ViewHolder.h"
 #include <time.h>
 
 void initApplication(Application *application) {
   SDL_Init(SDL_INIT_VIDEO);
   srand(time(NULL));
-  View *view = malloc(sizeof(View));
-  initView(view, DEFAULT_WINDOW_SIZE_XY, DEFAULT_WINDOW_SIZE_XY);
-  application->view = view;
+  ViewHolder *viewHolder = malloc(sizeof(ViewHolder));
+  initViewHolder(viewHolder, DEFAULT_WINDOW_SIZE_XY, DEFAULT_WINDOW_SIZE_XY);
+  application->viewHolder = viewHolder;
 
   Event *event = malloc(sizeof(Event));
   initEvent(event);
   application->event = event;
 
   LogicController *logicController = malloc(sizeof(LogicController));
-  initLogicController(logicController, event, view);
+  initLogicController(logicController, event, viewHolder);
   application->logicController = logicController;
 
 //  CmdController *cmdController = malloc(sizeof(CmdController));
-//  *cmdController = initCmdController(logicController, event, view);
+//  initCmdController(cmdController, logicController, event, viewHolder);
 //  application->cmdController = cmdController;
 }
 
 void mainLoop(Application *application) {
   while (application->event->isRunning) {
     handleEvents(application->event);
+    clearScreenViewHolder(application->viewHolder);
     updateLogic(application->logicController);
 //    updateCmd(application->cmdController);
   }
 }
 
 void freeApplication(Application *application) {
-  if (!application) return;
+//  if(application->cmdController) {
 //  freeCmdController(application->cmdController);
-  freeLogicController(application->logicController);
-  freeView(application->view);
-  freeEvent(application->event);
+//    free(application->cmdController);
+//    application->cmdController = NULL;
+//  }
+
+  if (application->logicController) {
+    freeLogicController(application->logicController);
+    free(application->logicController);
+    application->logicController = NULL;
+  }
+
+  if (application->viewHolder) {
+    freeViewHolder(application->viewHolder);
+    free(application->viewHolder);
+    application->viewHolder = NULL;
+  }
   SDL_Quit();
 }
 

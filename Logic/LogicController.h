@@ -5,7 +5,7 @@
 
 typedef struct Event Event;
 typedef struct LogicModel LogicModel;
-typedef struct View View;
+typedef struct ViewHolder ViewHolder;
 typedef struct LogicView LogicView;
 
 typedef struct LogicController {
@@ -19,7 +19,7 @@ typedef struct LogicController {
   Uint32 timeBetweenSteps;
 } LogicController;
 
-void initLogicController(LogicController *logicController, Event *event, View *view);
+void initLogicController(LogicController *logicController, Event *event, ViewHolder *viewHolder);
 
 void freeLogicController(LogicController *logicController);
 

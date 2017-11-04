@@ -28,7 +28,6 @@ void reInitLogicModel(LogicModel *logicModel, int xSize, int ySize, Uint8 edgeCo
 }
 
 void freeLogicModel(LogicModel *logicModel) {
-  if (!logicModel) return;
   if (logicModel->currentPlanar) {
     free(logicModel->currentPlanar);
     logicModel->currentPlanar = NULL;

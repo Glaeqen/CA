@@ -3,11 +3,11 @@
 #include <SDL2/SDL.h>
 
 typedef struct LogicController LogicController;
-typedef struct View View;
+typedef struct ViewHolder ViewHolder;
 
 typedef struct LogicView {
   LogicController *logicController;
-  View *view;
+  ViewHolder *viewHolder;
 
   SDL_Rect *cellsArray;
   int cellsArraySizeX;
@@ -16,8 +16,10 @@ typedef struct LogicView {
   Uint8 colorsArray[2][3];
 } LogicView;
 
-void initLogicView(LogicView *logicView, LogicController *logicController, View *view);
+void initLogicView(LogicView *logicView, LogicController *logicController, ViewHolder *viewHolder);
 
 void freeLogicView(LogicView *logicView);
 
 void drawLogicView(LogicView *logicView);
+
+void reInitLogicView(LogicView *logicView);

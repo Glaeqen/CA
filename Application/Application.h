@@ -4,7 +4,7 @@
 #include "../Logic/LogicController.h"
 
 typedef struct Application {
-  View *view;
+  ViewHolder *viewHolder;
   Event *event;
   LogicController *logicController;
 //  CmdController *cmdController;

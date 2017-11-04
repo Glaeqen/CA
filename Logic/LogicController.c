@@ -3,8 +3,9 @@
 #include "LogicController.h"
 #include "LogicModel.h"
 #include "LogicView.h"
+#include "../ViewHolder/ViewHolder.h"
 
-void initLogicController(LogicController *logicController, Event *event, View *view) {
+void initLogicController(LogicController *logicController, Event *event, ViewHolder *viewHolder) {
   logicController->event = event;
 
   LogicModel *logicModel = malloc(sizeof(LogicModel));
@@ -12,7 +13,7 @@ void initLogicController(LogicController *logicController, Event *event, View *v
   logicController->logicModel = logicModel;
 
   LogicView *logicView = malloc(sizeof(LogicView));
-  initLogicView(logicView, logicController, view);
+  initLogicView(logicView, logicController, viewHolder);
   logicController->logicView = logicView;
 
   logicController->lastUpdate = SDL_GetTicks();
@@ -21,11 +22,17 @@ void initLogicController(LogicController *logicController, Event *event, View *v
 }
 
 void freeLogicController(LogicController *logicController) {
-  if (!logicController) return;
-  freeLogicView(logicController->logicView);
-  logicController->logicView = NULL;
-  freeLogicModel(logicController->logicModel);
-  logicController->logicModel = NULL;
+  if (logicController->logicView) {
+    freeLogicView(logicController->logicView);
+    free(logicController->logicView);
+    logicController->logicView = NULL;
+  }
+
+  if (logicController->logicModel) {
+    freeLogicModel(logicController->logicModel);
+    free(logicController->logicModel);
+    logicController->logicModel = NULL;
+  }
 }
 
 static void updateLogicController(LogicController *logicController) {
@@ -38,7 +45,6 @@ static void updateLogicModel(LogicController *logicController) {
   if (logicController->isManual) {
     if (logicController->event->keyPressed == 'n') {
       nextStep(logicController->logicModel);
-      logicController->event->keyPressed = 0;
     };
   }
     // Automatic control
@@ -52,6 +58,11 @@ static void updateLogicModel(LogicController *logicController) {
 }
 
 static void updateLogicView(LogicController *logicController) {
+  if (logicController->event->windowResized) reInitLogicView(logicController->logicView);
+  if (logicController->event->keyPressed == 'r'){
+    SDL_SetWindowSize(logicController->logicView->viewHolder->window, DEFAULT_WINDOW_SIZE_XY, DEFAULT_WINDOW_SIZE_XY);
+    reInitLogicView(logicController->logicView);
+  }
   drawLogicView(logicController->logicView);
 }
 
